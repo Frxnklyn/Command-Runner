@@ -32,6 +32,15 @@ await runner.run({
 });
 ```
 
+Das Standard-CWD kann auch direkt beim Erstellen gesetzt werden:
+
+```ts
+const runner = new PathAwareCommandRunner(
+  new NodeCommandRunner(),
+  "C:/dev/my-repo",
+);
+```
+
 Der Runner erbt bewusst nicht vom `DirectoryManager`: Er scannt keine Dateien, verwaltet keine Ordner und enthaelt keine Git-Logik. Sein einziger Zweck ist die Ausfuehrung uebergebener Commands.
 
 ## Interne Dependency

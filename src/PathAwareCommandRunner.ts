@@ -7,9 +7,10 @@ import type {
 } from "@frxnklyn/command-contracts";
 
 export class PathAwareCommandRunner implements PathAwareCommandRunnerInterface {
-  private cwd?: string;
-
-  constructor(private readonly commandRunner: CommandRunnerInterface) {}
+  constructor(
+    private readonly commandRunner: CommandRunnerInterface,
+    private cwd?: string,
+  ) {}
 
   setCwd(path: string): this {
     this.cwd = path;
