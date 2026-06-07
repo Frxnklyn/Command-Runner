@@ -15,7 +15,7 @@ import { NodeCommandRunner } from "./NodeCommandRunner.js";
  */
 export class DirectoryCommandRunner
   extends DirectoryManager
-  implements DirectoryCommandRunnerInterface<DirectoryManager>
+  implements DirectoryCommandRunnerInterface
 {
   constructor(path?: string) {
     super(path);
