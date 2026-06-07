@@ -4,55 +4,60 @@ import type {
   CommandRunnerOptionsInterface,
   DirectoryCommandRunnerInterface,
 } from "@frxnklyn/command-contracts";
-import type { DirectoryInterface } from "@frxnklyn/directory-contracts";
+import { DirectoryManager } from "@frxnklyn/file-manager/directory-manager";
 import { NodeCommandRunner } from "./NodeCommandRunner.js";
 
 /**
- * Fuehrt Commands mit dem aktuellen Pfad eines gespeicherten DirectoryInterface
- * als Standard-CWD aus. Einzelne Ausfuehrungen koennen ohne Instanz ueber
- * `DirectoryCommandRunner.run` gestartet werden.
+ * Kombiniert den DirectoryManager mit Command-Ausfuehrung. Die Klasse verwaltet
+ * ihr Directory selbst und verwendet ihren aktuellen Pfad als Standard-CWD.
  *
  * @author Frxnklyn
  */
-export class DirectoryCommandRunner implements DirectoryCommandRunnerInterface {
+export class DirectoryCommandRunner
+  extends DirectoryManager
+  implements DirectoryCommandRunnerInterface<DirectoryManager>
+{
+  constructor(path?: string) {
+    super(path);
+  }
+
   static run(
-    directory: DirectoryInterface,
     command: CommandInterface,
     options?: CommandRunnerOptionsInterface,
+  ): Promise<CommandResultInterface>;
+  static run(
+    path: string,
+    command: CommandInterface,
+    options?: CommandRunnerOptionsInterface,
+  ): Promise<CommandResultInterface>;
+  static run(
+    pathOrCommand: string | CommandInterface,
+    commandOrOptions?: CommandInterface | CommandRunnerOptionsInterface,
+    options?: CommandRunnerOptionsInterface,
   ): Promise<CommandResultInterface> {
-    return NodeCommandRunner.run(
-      {
-        ...command,
-        cwd: command.cwd ?? directory.getPath(),
-      },
-      options,
+    if (typeof pathOrCommand === "string") {
+      return new DirectoryCommandRunner(pathOrCommand).run(
+        commandOrOptions as CommandInterface,
+        options,
+      );
+    }
+
+    return new DirectoryCommandRunner().run(
+      pathOrCommand,
+      commandOrOptions as CommandRunnerOptionsInterface | undefined,
     );
-  }
-
-  constructor(private directory: DirectoryInterface) {}
-
-  setDirectory(directory: DirectoryInterface): this {
-    this.directory = directory;
-    return this;
-  }
-
-  getDirectory(): DirectoryInterface {
-    return this.directory;
-  }
-
-  setPath(path: string): this {
-    this.directory.setPath(path);
-    return this;
-  }
-
-  getPath(): string {
-    return this.directory.getPath();
   }
 
   run(
     command: CommandInterface,
     options?: CommandRunnerOptionsInterface,
   ): Promise<CommandResultInterface> {
-    return DirectoryCommandRunner.run(this.getDirectory(), command, options);
+    return NodeCommandRunner.run(
+      {
+        ...command,
+        cwd: command.cwd ?? this.getPath(),
+      },
+      options,
+    );
   }
 }
