@@ -17,6 +17,15 @@ const result = await runner.run({
 });
 ```
 
+Fuer einen einzelnen Aufruf muss keine Instanz erstellt werden:
+
+```ts
+const result = await NodeCommandRunner.run({
+  command: "node",
+  args: ["--version"],
+});
+```
+
 ```ts
 import { PathAwareCommandRunner } from "@frxnklyn/command-runner";
 
@@ -35,6 +44,15 @@ const runner = new PathAwareCommandRunner("C:/dev/my-repo");
 await runner.run({ command: "git", args: ["status"] });
 ```
 
+Statischer Aufruf mit String-Pfad:
+
+```ts
+await PathAwareCommandRunner.run("C:/dev/my-repo", {
+  command: "git",
+  args: ["status"],
+});
+```
+
 ## DirectoryCommandRunner
 
 Diese Variante speichert ein `DirectoryInterface` statt eines String-Pfads. Der aktuelle Pfad wird bei jedem `run(...)` neu gelesen. Veraendert sich das Directory, verwendet der naechste Command automatisch dessen neuen Pfad.
@@ -48,6 +66,15 @@ await runner.run({ command: "git", args: ["status"] });
 
 directory.moveTo("packages/example");
 await runner.run({ command: "git", args: ["status"] });
+```
+
+Statischer Aufruf mit `DirectoryInterface`:
+
+```ts
+await DirectoryCommandRunner.run(directory, {
+  command: "git",
+  args: ["status"],
+});
 ```
 
 Der Runner erbt bewusst nicht vom `DirectoryManager`: Er scannt keine Dateien, verwaltet keine Ordner und enthaelt keine Git-Logik. Sein einziger Zweck ist die Ausfuehrung uebergebener Commands.

@@ -14,6 +14,15 @@ export class CommandExecutionError extends Error {
 }
 
 export class NodeCommandRunner implements CommandRunnerInterface {
+  private static readonly defaultRunner = new NodeCommandRunner();
+
+  static run(
+    command: CommandInterface,
+    options?: CommandRunnerOptionsInterface,
+  ): Promise<CommandResultInterface> {
+    return NodeCommandRunner.defaultRunner.run(command, options);
+  }
+
   run(
     command: CommandInterface,
     options: CommandRunnerOptionsInterface = {},

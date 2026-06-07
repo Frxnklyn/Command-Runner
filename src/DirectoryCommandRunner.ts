@@ -1,7 +1,6 @@
 import type {
   CommandInterface,
   CommandResultInterface,
-  CommandRunnerInterface,
   CommandRunnerOptionsInterface,
   DirectoryCommandRunnerInterface,
 } from "@frxnklyn/command-contracts";
@@ -9,7 +8,19 @@ import type { DirectoryInterface } from "@frxnklyn/directory-contracts";
 import { NodeCommandRunner } from "./NodeCommandRunner.js";
 
 export class DirectoryCommandRunner implements DirectoryCommandRunnerInterface {
-  private readonly commandRunner: CommandRunnerInterface = new NodeCommandRunner();
+  static run(
+    directory: DirectoryInterface,
+    command: CommandInterface,
+    options?: CommandRunnerOptionsInterface,
+  ): Promise<CommandResultInterface> {
+    return NodeCommandRunner.run(
+      {
+        ...command,
+        cwd: command.cwd ?? directory.getPath(),
+      },
+      options,
+    );
+  }
 
   constructor(private directory: DirectoryInterface) {}
 
@@ -35,12 +46,6 @@ export class DirectoryCommandRunner implements DirectoryCommandRunnerInterface {
     command: CommandInterface,
     options?: CommandRunnerOptionsInterface,
   ): Promise<CommandResultInterface> {
-    return this.commandRunner.run(
-      {
-        ...command,
-        cwd: command.cwd ?? this.getPath(),
-      },
-      options,
-    );
+    return DirectoryCommandRunner.run(this.getDirectory(), command, options);
   }
 }

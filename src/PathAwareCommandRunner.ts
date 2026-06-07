@@ -1,14 +1,25 @@
 import type {
   CommandInterface,
   CommandResultInterface,
-  CommandRunnerInterface,
   CommandRunnerOptionsInterface,
   PathAwareCommandRunnerInterface,
 } from "@frxnklyn/command-contracts";
 import { NodeCommandRunner } from "./NodeCommandRunner.js";
 
 export class PathAwareCommandRunner implements PathAwareCommandRunnerInterface {
-  private readonly commandRunner: CommandRunnerInterface = new NodeCommandRunner();
+  static run(
+    path: string,
+    command: CommandInterface,
+    options?: CommandRunnerOptionsInterface,
+  ): Promise<CommandResultInterface> {
+    return NodeCommandRunner.run(
+      {
+        ...command,
+        cwd: command.cwd ?? path,
+      },
+      options,
+    );
+  }
 
   constructor(private path: string) {}
 
@@ -25,12 +36,6 @@ export class PathAwareCommandRunner implements PathAwareCommandRunnerInterface {
     command: CommandInterface,
     options?: CommandRunnerOptionsInterface,
   ): Promise<CommandResultInterface> {
-    return this.commandRunner.run(
-      {
-        ...command,
-        cwd: command.cwd ?? this.getPath(),
-      },
-      options,
-    );
+    return PathAwareCommandRunner.run(this.getPath(), command, options);
   }
 }
