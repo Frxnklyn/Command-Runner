@@ -2,9 +2,9 @@
 
 Konkrete Node.js-Implementierung von `CommandRunnerInterface` aus `@frxnklyn/command-contracts`.
 
-`NodeCommandRunner` fuehrt genau einen strukturierten Command mit `node:child_process.execFile` aus. Er liefert `stdout`, `stderr`, Exit-Code und Erfolgsstatus als strukturiertes Ergebnis zurueck.
+`NodeCommandRunner` ist die Variante ohne gespeicherten Pfad. Er fuehrt genau einen strukturierten Command mit `node:child_process.execFile` aus. Er liefert `stdout`, `stderr`, Exit-Code und Erfolgsstatus als strukturiertes Ergebnis zurueck.
 
-`PathAwareCommandRunner` ist ein Composition-Wrapper um einen beliebigen `CommandRunnerInterface`. Er speichert optional ein Standard-CWD. Ein direkt am Command gesetztes `cwd` gewinnt immer.
+`PathAwareCommandRunner` und `DirectoryCommandRunner` sind Varianten mit gespeichertem Pfad. Dadurch benoetigt `run(...)` kein `cwd`. Ein direkt am Command gesetztes `cwd` gewinnt weiterhin.
 
 ```ts
 import { NodeCommandRunner } from "@frxnklyn/command-runner";
@@ -18,13 +18,9 @@ const result = await runner.run({
 ```
 
 ```ts
-import {
-  NodeCommandRunner,
-  PathAwareCommandRunner,
-} from "@frxnklyn/command-runner";
+import { PathAwareCommandRunner } from "@frxnklyn/command-runner";
 
-const runner = new PathAwareCommandRunner(new NodeCommandRunner());
-runner.setCwd("C:/dev/my-repo");
+const runner = new PathAwareCommandRunner("C:/dev/my-repo");
 
 await runner.run({
   command: "git",
@@ -35,17 +31,30 @@ await runner.run({
 Das Standard-CWD kann auch direkt beim Erstellen gesetzt werden:
 
 ```ts
-const runner = new PathAwareCommandRunner(
-  new NodeCommandRunner(),
-  "C:/dev/my-repo",
-);
+const runner = new PathAwareCommandRunner("C:/dev/my-repo");
+await runner.run({ command: "git", args: ["status"] });
+```
+
+## DirectoryCommandRunner
+
+Diese Variante speichert ein `DirectoryInterface` statt eines String-Pfads. Der aktuelle Pfad wird bei jedem `run(...)` neu gelesen. Veraendert sich das Directory, verwendet der naechste Command automatisch dessen neuen Pfad.
+
+```ts
+import { DirectoryCommandRunner } from "@frxnklyn/command-runner";
+
+const runner = new DirectoryCommandRunner(directory);
+
+await runner.run({ command: "git", args: ["status"] });
+
+directory.moveTo("packages/example");
+await runner.run({ command: "git", args: ["status"] });
 ```
 
 Der Runner erbt bewusst nicht vom `DirectoryManager`: Er scannt keine Dateien, verwaltet keine Ordner und enthaelt keine Git-Logik. Sein einziger Zweck ist die Ausfuehrung uebergebener Commands.
 
 ## Interne Dependency
 
-Fuer lokale Entwicklung verweist `devDependencies` auf `../npm-command-contracts`. Konsumenten muessen `@frxnklyn/command-contracts` bereitstellen; die Peer Dependency verweist auf das GitHub-Repository.
+Fuer lokale Entwicklung verweisen die `devDependencies` auf `../npm-command-contracts` und `../npm-directory-contracts`. Konsumenten muessen beide Peer Dependencies bereitstellen.
 
 ## Build
 

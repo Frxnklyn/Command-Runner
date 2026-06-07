@@ -33,10 +33,12 @@
     "url": "git+https://github.com/Frxnklyn/Command-Runner.git"
   },
   "peerDependencies": {
-    "@frxnklyn/command-contracts": "github:Frxnklyn/npm-command-contracts"
+    "@frxnklyn/command-contracts": "github:Frxnklyn/npm-command-contracts",
+    "@frxnklyn/directory-contracts": "github:Frxnklyn/npm-directory-contracts"
   },
   "devDependencies": {
     "@frxnklyn/command-contracts": "file:../npm-command-contracts",
+    "@frxnklyn/directory-contracts": "file:../npm-directory-contracts",
     "@types/node": "^24.9.1",
     "typescript": "^5.9.3"
   }

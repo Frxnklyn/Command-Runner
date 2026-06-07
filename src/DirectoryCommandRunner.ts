@@ -3,22 +3,32 @@ import type {
   CommandResultInterface,
   CommandRunnerInterface,
   CommandRunnerOptionsInterface,
-  PathAwareCommandRunnerInterface,
+  DirectoryCommandRunnerInterface,
 } from "@frxnklyn/command-contracts";
+import type { DirectoryInterface } from "@frxnklyn/directory-contracts";
 import { NodeCommandRunner } from "./NodeCommandRunner.js";
 
-export class PathAwareCommandRunner implements PathAwareCommandRunnerInterface {
+export class DirectoryCommandRunner implements DirectoryCommandRunnerInterface {
   private readonly commandRunner: CommandRunnerInterface = new NodeCommandRunner();
 
-  constructor(private path: string) {}
+  constructor(private directory: DirectoryInterface) {}
+
+  setDirectory(directory: DirectoryInterface): this {
+    this.directory = directory;
+    return this;
+  }
+
+  getDirectory(): DirectoryInterface {
+    return this.directory;
+  }
 
   setPath(path: string): this {
-    this.path = path;
+    this.directory.setPath(path);
     return this;
   }
 
   getPath(): string {
-    return this.path;
+    return this.directory.getPath();
   }
 
   run(
