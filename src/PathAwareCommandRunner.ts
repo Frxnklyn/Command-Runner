@@ -6,6 +6,13 @@ import type {
 } from "@frxnklyn/command-contracts";
 import { NodeCommandRunner } from "./NodeCommandRunner.js";
 
+/**
+ * Fuehrt Commands mit einem gespeicherten String-Pfad als Standard-CWD aus.
+ * Ein direkt am Command gesetztes `cwd` hat Vorrang. Einzelne Ausfuehrungen
+ * koennen ohne Instanz ueber `PathAwareCommandRunner.run` gestartet werden.
+ *
+ * @author Frxnklyn
+ */
 export class PathAwareCommandRunner implements PathAwareCommandRunnerInterface {
   static run(
     path: string,

@@ -6,6 +6,12 @@ import type {
   CommandRunnerOptionsInterface,
 } from "@frxnklyn/command-contracts";
 
+/**
+ * Fehler fuer fehlgeschlagene Commands, wenn `throwOnError` aktiviert ist.
+ * Das vollstaendige strukturierte Ergebnis bleibt ueber `result` verfuegbar.
+ *
+ * @author Frxnklyn
+ */
 export class CommandExecutionError extends Error {
   constructor(public readonly result: CommandResultInterface) {
     super(`Command failed with exit code ${String(result.exitCode)}: ${result.command}`);
@@ -13,6 +19,13 @@ export class CommandExecutionError extends Error {
   }
 }
 
+/**
+ * Fuehrt strukturierte Commands mit Node.js `execFile` ohne fest gespeicherten
+ * Pfad aus. Fuer einzelne Ausfuehrungen steht zusaetzlich `NodeCommandRunner.run`
+ * als statischer Einstieg zur Verfuegung.
+ *
+ * @author Frxnklyn
+ */
 export class NodeCommandRunner implements CommandRunnerInterface {
   private static readonly defaultRunner = new NodeCommandRunner();
 

@@ -7,6 +7,13 @@ import type {
 import type { DirectoryInterface } from "@frxnklyn/directory-contracts";
 import { NodeCommandRunner } from "./NodeCommandRunner.js";
 
+/**
+ * Fuehrt Commands mit dem aktuellen Pfad eines gespeicherten DirectoryInterface
+ * als Standard-CWD aus. Einzelne Ausfuehrungen koennen ohne Instanz ueber
+ * `DirectoryCommandRunner.run` gestartet werden.
+ *
+ * @author Frxnklyn
+ */
 export class DirectoryCommandRunner implements DirectoryCommandRunnerInterface {
   static run(
     directory: DirectoryInterface,
