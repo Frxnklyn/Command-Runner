@@ -1,0 +1,43 @@
+{
+  "name": "@frxnklyn/command-runner",
+  "version": "0.1.0",
+  "description": "Node.js implementation of structured command runner contracts.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "typescript",
+    "node",
+    "command",
+    "runner"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Frxnklyn/Command-Runner.git"
+  },
+  "peerDependencies": {
+    "@frxnklyn/command-contracts": "github:Frxnklyn/npm-command-contracts"
+  },
+  "devDependencies": {
+    "@frxnklyn/command-contracts": "file:../npm-command-contracts",
+    "@types/node": "^24.9.1",
+    "typescript": "^5.9.3"
+  }
+}
